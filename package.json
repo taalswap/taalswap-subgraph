@@ -1,9 +1,9 @@
 {
-  "name": "pancake-subgraph",
-  "description": "PancakeSwap Subgraph",
+  "name": "taalswap-subgraph",
+  "description": "TaalSwap Subgraph",
   "version": "2.0.0",
-  "repository": "git@github.com:pancakeswap/pancake-subgraph.git",
-  "author": "PancakeSwap",
+  "repository": "https://github.com/taalswap/taalswap-subgraph.git",
+  "author": "TaalSwap",
   "license": "MIT",
   "scripts": {
     "codegen:blocks": "graph codegen subgraphs/blocks.yaml",
@@ -22,23 +22,17 @@
     "build:smartchef": "graph build subgraphs/smartchef.yaml",
     "build:timelock": "graph build subgraphs/timelock.yaml",
     "build:trading": "graph build subgraphs/trading.yaml",
-    "deploy:blocks": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ pancakeswap/blocks subgraphs/blocks.yaml",
-    "deploy:exchange": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ pancakeswap/exchange subgraphs/exchange.yaml",
-    "deploy:pairs": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ pancakeswap/pairs subgraphs/pairs.yaml",
-    "deploy:prediction": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ pancakeswap/prediction subgraphs/prediction.yaml",
-    "deploy:profile": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ pancakeswap/profile subgraphs/profile.yaml",
-    "deploy:smartchef": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ pancakeswap/smartchef subgraphs/smartchef.yaml",
-    "deploy:timelock": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ pancakeswap/timelock subgraphs/timelock.yaml",
-    "deploy:trading": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ pancakeswap/trading-competition-v1 subgraphs/trading.yaml",
+    "deploy:blocks": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ taalswap/blocks subgraphs/blocks.yaml",
+    "deploy:exchange": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ taalswap/exchange subgraphs/exchange.yaml",
+    "deploy:pairs": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ taalswap/pairs subgraphs/pairs.yaml",
+    "deploy:prediction": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ taalswap/prediction subgraphs/prediction.yaml",
+    "deploy:profile": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ taalswap/profile subgraphs/profile.yaml",
+    "deploy:smartchef": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ taalswap/smartchef subgraphs/smartchef.yaml",
+    "deploy:timelock": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ taalswap/timelock subgraphs/timelock.yaml",
+    "deploy:trading": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ taalswap/trading-competition-v1 subgraphs/trading.yaml",
     "format:check": "prettier --check '*/**/*.{js,ts}'",
     "format:write": "prettier --write '*/**/*.{js,ts}'",
     "lint": "eslint '*/**/*.{js,ts}'"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn format:check",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",

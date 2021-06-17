@@ -3,9 +3,9 @@ import { BigDecimal, Address } from "@graphprotocol/graph-ts/index";
 import { Pair, Token, Bundle } from "../../generated/schema";
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from "./utils";
 
-let WBNB_ADDRESS = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c";
-let BUSD_WBNB_PAIR = "0x58f876857a02d6762e0101bb5c46a8c1ed44dc16"; // created block 589414
-let USDT_WBNB_PAIR = "0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae"; // created block 648115
+let WBNB_ADDRESS = "0x92ecacfc94588aa99fba837be1a98738290e3252";
+let BUSD_WBNB_PAIR = "0xc21e58121ec8cb2782e622b877199d9e94ddd93e"; // created block 8639053
+let USDT_WBNB_PAIR = "0x3511803bd67f5149be3a64cdbce62576d0ec8b13"; // created block 8640192
 
 export function getBnbPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
@@ -13,18 +13,18 @@ export function getBnbPriceInUSD(): BigDecimal {
   let busdPair = Pair.load(BUSD_WBNB_PAIR); // busd is token1
 
   if (busdPair !== null && usdtPair !== null) {
-    let totalLiquidityBNB = busdPair.reserve0.plus(usdtPair.reserve1);
+    let totalLiquidityBNB = busdPair.reserve0.plus(usdtPair.reserve0);    // TaalSwap의 경우 순서 바뀜
     if (totalLiquidityBNB.notEqual(ZERO_BD)) {
       let busdWeight = busdPair.reserve0.div(totalLiquidityBNB);
-      let usdtWeight = usdtPair.reserve1.div(totalLiquidityBNB);
-      return busdPair.token1Price.times(busdWeight).plus(usdtPair.token0Price.times(usdtWeight));
+      let usdtWeight = usdtPair.reserve0.div(totalLiquidityBNB);          // TaalSwap의 경우 순서 바뀜
+      return busdPair.token1Price.times(busdWeight).plus(usdtPair.token1Price.times(usdtWeight));   // TaalSwap의 경우 순서 바뀜
     } else {
       return ZERO_BD;
     }
   } else if (busdPair !== null) {
     return busdPair.token1Price;
   } else if (usdtPair !== null) {
-    return usdtPair.token0Price;
+    return usdtPair.token1Price;    // TaalSwap의 경우 순서 바뀜
   } else {
     return ZERO_BD;
   }
@@ -32,13 +32,13 @@ export function getBnbPriceInUSD(): BigDecimal {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-  "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", // WBNB
-  "0xe9e7cea3dedca5984780bafc599bd69add087d56", // BUSD
-  "0x55d398326f99059ff775485246999027b3197955", // USDT
-  "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // USDC
-  "0x23396cf899ca06c4472205fc903bdb4de249d6fc", // UST
-  "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c", // BTCB
-  "0x2170ed0880ac9a755fd29b2688956bd959f933f8", // WETH
+  "0x92ecacfc94588aa99fba837be1a98738290e3252", // WBNB
+  "0xd16431da4eafe953b4f34923cdb8d833fb1b2e7c", // BUSD
+  "0xc958c2ace36870471238319bc29018cc549c126d", // USDT
+  // "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // USDC
+  // "0x23396cf899ca06c4472205fc903bdb4de249d6fc", // UST
+  // "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c", // BTCB
+  // "0x2170ed0880ac9a755fd29b2688956bd959f933f8", // WETH
 ];
 
 // minimum liquidity for price to get tracked

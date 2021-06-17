@@ -1,16 +1,16 @@
 specVersion: 0.0.2
-description: PancakeSwap is a decentralized protocol for automated token exchange on Binance Smart Chain.
-repository: https://github.com/pancakeswap
+description: TaalSwap is a decentralized protocol for automated token exchange on Ethereum.
+repository: https://github.com/taalswap
 schema:
   file: ./pairs.graphql
 dataSources:
   - kind: ethereum/contract
     name: Factory
-    network: bsc
+    network: rinkeby
     source:
-      address: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73'
+      address: '0x8BCAECe1041dEcC4704dCc07caB9f00F745b07Ba'
       abi: Factory
-      startBlock: 6809737
+      startBlock: 8650389
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4

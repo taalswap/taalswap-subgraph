@@ -1,12 +1,12 @@
 specVersion: 0.0.2
-description: Pancake Trading Competition V1
-repository: https://github.com/pancakeswap
+description: Taal Trading Competition V1
+repository: https://github.com/taalswap
 schema:
   file: ./trading.graphql
 dataSources:
   - kind: ethereum/contract
     name: TradingCompetitionV1
-    network: bsc
+    network: rinkeby
     source:
       address: '0xd718baa0B1F4f70dcC8458154042120FFE0DEFFA'
       abi: TradingCompetitionV1

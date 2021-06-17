@@ -1,12 +1,12 @@
 specVersion: 0.0.2
-description: PancakeSwap Timelock contract
-repository: https://github.com/pancakeswap
+description: TaalSwap Timelock contract
+repository: https://github.com/taalswap
 schema:
   file: ./timelock.graphql
 dataSources:
   - kind: ethereum/contract
     name: Timelock
-    network: bsc
+    network: rinkeby
     source:
       address: '0xA1f482Dc58145Ba2210bC21878Ca34000E2e8fE4'
       abi: Timelock
