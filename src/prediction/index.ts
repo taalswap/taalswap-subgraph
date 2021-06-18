@@ -39,10 +39,10 @@ export function handlePause(event: Pause): void {
     market.totalBets = ZERO_BI;
     market.totalBetsBull = ZERO_BI;
     market.totalBetsBear = ZERO_BI;
-    market.totalBNB = ZERO_BD;
-    market.totalBNBBull = ZERO_BD;
-    market.totalBNBBear = ZERO_BD;
-    market.totalBNBTreasury = ZERO_BD;
+    market.totalETH = ZERO_BD;
+    market.totalETHBull = ZERO_BD;
+    market.totalETHBear = ZERO_BD;
+    market.totalETHTreasury = ZERO_BD;
     market.rewardRate = BASE_REWARD_RATE;
     market.treasuryRate = BASE_TREASURY_RATE;
     market.save();
@@ -76,10 +76,10 @@ export function handleUnpause(event: Unpause): void {
     market.totalBets = ZERO_BI;
     market.totalBetsBull = ZERO_BI;
     market.totalBetsBear = ZERO_BI;
-    market.totalBNB = ZERO_BD;
-    market.totalBNBBull = ZERO_BD;
-    market.totalBNBBear = ZERO_BD;
-    market.totalBNBTreasury = ZERO_BD;
+    market.totalETH = ZERO_BD;
+    market.totalETHBull = ZERO_BD;
+    market.totalETHBear = ZERO_BD;
+    market.totalETHTreasury = ZERO_BD;
     market.rewardRate = BASE_REWARD_RATE;
     market.treasuryRate = BASE_TREASURY_RATE;
     market.save();
@@ -103,10 +103,10 @@ export function handleRatesUpdated(event: RatesUpdated): void {
     market.totalBets = ZERO_BI;
     market.totalBetsBull = ZERO_BI;
     market.totalBetsBear = ZERO_BI;
-    market.totalBNB = ZERO_BD;
-    market.totalBNBBull = ZERO_BD;
-    market.totalBNBBear = ZERO_BD;
-    market.totalBNBTreasury = ZERO_BD;
+    market.totalETH = ZERO_BD;
+    market.totalETHBull = ZERO_BD;
+    market.totalETHBear = ZERO_BD;
+    market.totalETHTreasury = ZERO_BD;
     market.rewardRate = BASE_REWARD_RATE;
     market.treasuryRate = BASE_TREASURY_RATE;
     market.save();
@@ -130,10 +130,10 @@ export function handleStartRound(event: StartRound): void {
     market.totalBets = ZERO_BI;
     market.totalBetsBull = ZERO_BI;
     market.totalBetsBear = ZERO_BI;
-    market.totalBNB = ZERO_BD;
-    market.totalBNBBull = ZERO_BD;
-    market.totalBNBBear = ZERO_BD;
-    market.totalBNBTreasury = ZERO_BD;
+    market.totalETH = ZERO_BD;
+    market.totalETHBull = ZERO_BD;
+    market.totalETHBear = ZERO_BD;
+    market.totalETHTreasury = ZERO_BD;
     market.rewardRate = BASE_REWARD_RATE;
     market.treasuryRate = BASE_TREASURY_RATE;
     market.save();
@@ -207,8 +207,8 @@ export function handleBetBull(event: BetBull): void {
   }
   market.totalBets = market.totalBets.plus(ONE_BI);
   market.totalBetsBull = market.totalBetsBull.plus(ONE_BI);
-  market.totalBNB = market.totalBNB.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
-  market.totalBNBBull = market.totalBNBBull.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
+  market.totalETH = market.totalETH.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
+  market.totalETHBull = market.totalETHBull.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
   market.save();
 
   let round = Round.load(event.params.currentEpoch.toString());
@@ -230,14 +230,14 @@ export function handleBetBull(event: BetBull): void {
     user.updatedAt = event.block.timestamp;
     user.block = event.block.number;
     user.totalBets = ZERO_BI;
-    user.totalBNB = ZERO_BD;
+    user.totalETH = ZERO_BD;
 
     market.totalUsers = market.totalUsers.plus(ONE_BI);
     market.save();
   }
   user.updatedAt = event.block.timestamp;
   user.totalBets = user.totalBets.plus(ONE_BI);
-  user.totalBNB = user.totalBNB.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
+  user.totalETH = user.totalETH.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
   user.save();
 
   let betId = concat(event.params.sender, Bytes.fromI32(event.params.currentEpoch.toI32())).toHex();
@@ -261,8 +261,8 @@ export function handleBetBear(event: BetBear): void {
   }
   market.totalBets = market.totalBets.plus(ONE_BI);
   market.totalBetsBear = market.totalBetsBear.plus(ONE_BI);
-  market.totalBNB = market.totalBNB.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
-  market.totalBNBBear = market.totalBNBBear.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
+  market.totalETH = market.totalETH.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
+  market.totalETHBear = market.totalETHBear.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
   market.save();
 
   let round = Round.load(event.params.currentEpoch.toString());
@@ -284,14 +284,14 @@ export function handleBetBear(event: BetBear): void {
     user.updatedAt = event.block.timestamp;
     user.block = event.block.number;
     user.totalBets = ZERO_BI;
-    user.totalBNB = ZERO_BD;
+    user.totalETH = ZERO_BD;
 
     market.totalUsers = market.totalUsers.plus(ONE_BI);
     market.save();
   }
   user.updatedAt = event.block.timestamp;
   user.totalBets = user.totalBets.plus(ONE_BI);
-  user.totalBNB = user.totalBNB.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
+  user.totalETH = user.totalETH.plus(event.params.amount.divDecimal(EIGHTEEN_BD));
   user.save();
 
   let betId = concat(event.params.sender, Bytes.fromI32(event.params.currentEpoch.toI32())).toHex();
@@ -325,7 +325,7 @@ export function handleRewardsCalculated(event: RewardsCalculated): void {
   if (market === null) {
     log.error("Tried query market after rewards were calculated for a round", []);
   }
-  market.totalBNBTreasury = market.totalBNBTreasury.plus(event.params.treasuryAmount.divDecimal(EIGHTEEN_BD));
+  market.totalETHTreasury = market.totalETHTreasury.plus(event.params.treasuryAmount.divDecimal(EIGHTEEN_BD));
   market.save();
 
   let round = Round.load(event.params.epoch.toString());

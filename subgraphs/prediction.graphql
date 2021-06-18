@@ -14,10 +14,10 @@ type Market @entity {
     totalBets: BigInt!
     totalBetsBull: BigInt!
     totalBetsBear: BigInt!
-    totalBNB: BigDecimal!
-    totalBNBBull: BigDecimal!
-    totalBNBBear: BigDecimal!
-    totalBNBTreasury: BigDecimal!
+    totalETH: BigDecimal!
+    totalETHBull: BigDecimal!
+    totalETHBear: BigDecimal!
+    totalETHTreasury: BigDecimal!
 
     rewardRate: BigInt!
     treasuryRate: BigInt!
@@ -74,7 +74,7 @@ type User @entity {
 
     # Bets
     totalBets: BigInt!
-    totalBNB: BigDecimal!
+    totalETH: BigDecimal!
     bets: [Bet!]! @derivedFrom(field: "user")
 }
 

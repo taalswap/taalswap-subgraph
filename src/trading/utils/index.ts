@@ -10,15 +10,15 @@ export let BD_1E18 = BigDecimal.fromString("1e18");
 export let TRACKED_PAIRS: string[] = [
   "0x3511803bd67f5149be3a64cdbce62576d0ec8b13", // WETH/USDT
   "0xaa25894ec1f4f28f6309bafa2794f77ec5df6be5", // TAL/WETH
-  // "0x70d8929d04b60af4fb9b58713ebcf18765ade422", // ETH/WBNB
-  // "0x7561eee90e24f3b348e1087a005f78b4c8453524", // BTCB/WBNB
+  // "0x70d8929d04b60af4fb9b58713ebcf18765ade422", // ETH/WETH
+  // "0x7561eee90e24f3b348e1087a005f78b4c8453524", // BTCB/WETH
 ];
 
-export function getBnbPriceInUSD(): BigDecimal {
-  // Bind WBNB/BUSD contract to query the pair.
+export function getEthPriceInUSD(): BigDecimal {
+  // Bind WETH/BUSD contract to query the pair.
   let pairContract = Pair.bind(Address.fromString(TRACKED_PAIRS[0]));
 
-  // Fail-safe call to get BNB price as BUSD.
+  // Fail-safe call to get ETH price as BUSD.
   let reserves = pairContract.try_getReserves();
   if (!reserves.reverted) {
     let reserve0 = reserves.value.value0.toBigDecimal().div(BD_1E18);

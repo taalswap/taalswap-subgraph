@@ -3,7 +3,7 @@ import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 import { Bundle, Competition, Team, User } from "../../generated/schema";
 import { Pair as PairTemplate } from "../../generated/templates";
 import { NewCompetitionStatus, UserRegister } from "../../generated/TradingCompetitionV1/TradingCompetitionV1";
-import { BD_ZERO, BI_ONE, BI_ZERO, getBnbPriceInUSD, TRACKED_PAIRS } from "./utils";
+import { BD_ZERO, BI_ONE, BI_ZERO, getEthPriceInUSD, TRACKED_PAIRS } from "./utils";
 
 /**
  * BLOCK
@@ -14,11 +14,11 @@ export function handleBlock(event: ethereum.Block): void {
   let bundle = Bundle.load("1");
   if (bundle === null) {
     bundle = new Bundle("1");
-    bundle.bnbPrice = BD_ZERO;
+    bundle.ethPrice = BD_ZERO;
     bundle.block = BI_ZERO;
     bundle.save();
   }
-  bundle.bnbPrice = getBnbPriceInUSD();
+  bundle.ethPrice = getEthPriceInUSD();
   bundle.block = event.number;
   bundle.save();
 }
@@ -35,7 +35,7 @@ export function handleUserRegister(event: UserRegister): void {
     competition.status = BI_ZERO; // Registration
     competition.userCount = BI_ZERO;
     competition.volumeUSD = BD_ZERO;
-    competition.volumeBNB = BD_ZERO;
+    competition.volumeETH = BD_ZERO;
     competition.txCount = BI_ZERO;
     competition.save();
   }
@@ -48,7 +48,7 @@ export function handleUserRegister(event: UserRegister): void {
     team = new Team(event.params.teamId.toString());
     team.userCount = BI_ZERO;
     team.volumeUSD = BD_ZERO;
-    team.volumeBNB = BD_ZERO;
+    team.volumeETH = BD_ZERO;
     team.txCount = BI_ZERO;
     team.save();
   }
@@ -63,7 +63,7 @@ export function handleUserRegister(event: UserRegister): void {
     user.team = team.id;
     user.block = event.block.number;
     user.volumeUSD = BD_ZERO;
-    user.volumeBNB = BD_ZERO;
+    user.volumeETH = BD_ZERO;
     user.txCount = BI_ZERO;
     user.save();
   }
@@ -77,7 +77,7 @@ export function handleNewCompetitionStatus(event: NewCompetitionStatus): void {
     competition.status = BI_ZERO; // Registration
     competition.userCount = BI_ZERO;
     competition.volumeUSD = BD_ZERO;
-    competition.volumeBNB = BD_ZERO;
+    competition.volumeETH = BD_ZERO;
     competition.txCount = BI_ZERO;
     competition.save();
   }

@@ -233,7 +233,7 @@
     ],
     "name": "ledger",
     "outputs": [
-      { "internalType": "enum BnbPricePrediction.Position", "name": "position", "type": "uint8" },
+      { "internalType": "enum EthPricePrediction.Position", "name": "position", "type": "uint8" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" },
       { "internalType": "bool", "name": "claimed", "type": "bool" }
     ],

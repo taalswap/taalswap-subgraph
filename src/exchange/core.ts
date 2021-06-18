@@ -3,7 +3,7 @@ import { BigInt, BigDecimal, store } from "@graphprotocol/graph-ts";
 import {
   Pair,
   Token,
-  PancakeFactory,
+  TaalFactory,
   Transaction,
   Mint as MintEvent,
   Burn as BurnEvent,
@@ -11,8 +11,8 @@ import {
   Bundle,
 } from "../../generated/schema";
 import { Mint, Burn, Swap, Transfer, Sync } from "../../generated/templates/Pair/Pair";
-import { updatePairDayData, updateTokenDayData, updatePancakeDayData, updatePairHourData } from "./dayUpdates";
-import { getBnbPriceInUSD, findBnbPerToken, getTrackedVolumeUSD, getTrackedLiquidityUSD } from "./pricing";
+import { updatePairDayData, updateTokenDayData, updateTaalDayData, updatePairHourData } from "./dayUpdates";
+import { getEthPriceInUSD, findEthPerToken, getTrackedVolumeUSD, getTrackedLiquidityUSD } from "./pricing";
 import { convertTokenToDecimal, ADDRESS_ZERO, FACTORY_ADDRESS, ONE_BI, ZERO_BD, BI_18 } from "./utils";
 
 function isCompleteMint(mintId: string): boolean {
@@ -70,7 +70,7 @@ export function handleTransfer(event: Transfer): void {
     }
   }
 
-  // case where direct send first on BNB withdrawals
+  // case where direct send first on ETH withdrawals
   if (event.params.to.toHex() == pair.id) {
     let burns = transaction.burns;
     let burn = new BurnEvent(
@@ -165,10 +165,10 @@ export function handleSync(event: Sync): void {
   let pair = Pair.load(event.address.toHex());
   let token0 = Token.load(pair.token0);
   let token1 = Token.load(pair.token1);
-  let pancake = PancakeFactory.load(FACTORY_ADDRESS);
+  let taal = TaalFactory.load(FACTORY_ADDRESS);
 
   // reset factory liquidity by subtracting only tracked liquidity
-  pancake.totalLiquidityBNB = pancake.totalLiquidityBNB.minus(pair.trackedReserveBNB as BigDecimal);
+  taal.totalLiquidityETH = taal.totalLiquidityETH.minus(pair.trackedReserveETH as BigDecimal);
 
   // reset token total liquidity amounts
   token0.totalLiquidity = token0.totalLiquidity.minus(pair.reserve0);
@@ -183,43 +183,43 @@ export function handleSync(event: Sync): void {
   else pair.token1Price = ZERO_BD;
 
   let bundle = Bundle.load("1");
-  bundle.bnbPrice = getBnbPriceInUSD();
+  bundle.ethPrice = getEthPriceInUSD();
   bundle.save();
 
-  let t0DerivedBNB = findBnbPerToken(token0 as Token);
-  token0.derivedBNB = t0DerivedBNB;
-  token0.derivedUSD = t0DerivedBNB.times(bundle.bnbPrice);
+  let t0DerivedETH = findEthPerToken(token0 as Token);
+  token0.derivedETH = t0DerivedETH;
+  token0.derivedUSD = t0DerivedETH.times(bundle.ethPrice);
   token0.save();
 
-  let t1DerivedBNB = findBnbPerToken(token1 as Token);
-  token1.derivedBNB = t1DerivedBNB;
-  token1.derivedUSD = t1DerivedBNB.times(bundle.bnbPrice);
+  let t1DerivedETH = findEthPerToken(token1 as Token);
+  token1.derivedETH = t1DerivedETH;
+  token1.derivedUSD = t1DerivedETH.times(bundle.ethPrice);
   token1.save();
 
   // get tracked liquidity - will be 0 if neither is in whitelist
-  let trackedLiquidityBNB: BigDecimal;
-  if (bundle.bnbPrice.notEqual(ZERO_BD)) {
-    trackedLiquidityBNB = getTrackedLiquidityUSD(
+  let trackedLiquidityETH: BigDecimal;
+  if (bundle.ethPrice.notEqual(ZERO_BD)) {
+    trackedLiquidityETH = getTrackedLiquidityUSD(
       bundle as Bundle,
       pair.reserve0,
       token0 as Token,
       pair.reserve1,
       token1 as Token
-    ).div(bundle.bnbPrice);
+    ).div(bundle.ethPrice);
   } else {
-    trackedLiquidityBNB = ZERO_BD;
+    trackedLiquidityETH = ZERO_BD;
   }
 
   // use derived amounts within pair
-  pair.trackedReserveBNB = trackedLiquidityBNB;
-  pair.reserveBNB = pair.reserve0
-    .times(token0.derivedBNB as BigDecimal)
-    .plus(pair.reserve1.times(token1.derivedBNB as BigDecimal));
-  pair.reserveUSD = pair.reserveBNB.times(bundle.bnbPrice);
+  pair.trackedReserveETH = trackedLiquidityETH;
+  pair.reserveETH = pair.reserve0
+    .times(token0.derivedETH as BigDecimal)
+    .plus(pair.reserve1.times(token1.derivedETH as BigDecimal));
+  pair.reserveUSD = pair.reserveETH.times(bundle.ethPrice);
 
   // use tracked amounts globally
-  pancake.totalLiquidityBNB = pancake.totalLiquidityBNB.plus(trackedLiquidityBNB);
-  pancake.totalLiquidityUSD = pancake.totalLiquidityBNB.times(bundle.bnbPrice);
+  taal.totalLiquidityETH = taal.totalLiquidityETH.plus(trackedLiquidityETH);
+  taal.totalLiquidityUSD = taal.totalLiquidityETH.times(bundle.ethPrice);
 
   // now correctly set liquidity amounts for each token
   token0.totalLiquidity = token0.totalLiquidity.plus(pair.reserve0);
@@ -227,7 +227,7 @@ export function handleSync(event: Sync): void {
 
   // save entities
   pair.save();
-  pancake.save();
+  taal.save();
   token0.save();
   token1.save();
 }
@@ -238,7 +238,7 @@ export function handleMint(event: Mint): void {
   let mint = MintEvent.load(mints[mints.length - 1]);
 
   let pair = Pair.load(event.address.toHex());
-  let pancake = PancakeFactory.load(FACTORY_ADDRESS);
+  let taal = TaalFactory.load(FACTORY_ADDRESS);
 
   let token0 = Token.load(pair.token0);
   let token1 = Token.load(pair.token1);
@@ -251,22 +251,22 @@ export function handleMint(event: Mint): void {
   token0.totalTransactions = token0.totalTransactions.plus(ONE_BI);
   token1.totalTransactions = token1.totalTransactions.plus(ONE_BI);
 
-  // get new amounts of USD and BNB for tracking
+  // get new amounts of USD and ETH for tracking
   let bundle = Bundle.load("1");
-  let amountTotalUSD = token1.derivedBNB
+  let amountTotalUSD = token1.derivedETH
     .times(token1Amount)
-    .plus(token0.derivedBNB.times(token0Amount))
-    .times(bundle.bnbPrice);
+    .plus(token0.derivedETH.times(token0Amount))
+    .times(bundle.ethPrice);
 
   // update txn counts
   pair.totalTransactions = pair.totalTransactions.plus(ONE_BI);
-  pancake.totalTransactions = pancake.totalTransactions.plus(ONE_BI);
+  taal.totalTransactions = taal.totalTransactions.plus(ONE_BI);
 
   // save entities
   token0.save();
   token1.save();
   pair.save();
-  pancake.save();
+  taal.save();
 
   mint.sender = event.params.sender;
   mint.amount0 = token0Amount as BigDecimal;
@@ -277,7 +277,7 @@ export function handleMint(event: Mint): void {
 
   updatePairDayData(event);
   updatePairHourData(event);
-  updatePancakeDayData(event);
+  updateTaalDayData(event);
   updateTokenDayData(token0 as Token, event);
   updateTokenDayData(token1 as Token, event);
 }
@@ -292,7 +292,7 @@ export function handleBurn(event: Burn): void {
   let burn = BurnEvent.load(burns[burns.length - 1]);
 
   let pair = Pair.load(event.address.toHex());
-  let pancake = PancakeFactory.load(FACTORY_ADDRESS);
+  let taal = TaalFactory.load(FACTORY_ADDRESS);
 
   //update token info
   let token0 = Token.load(pair.token0);
@@ -304,22 +304,22 @@ export function handleBurn(event: Burn): void {
   token0.totalTransactions = token0.totalTransactions.plus(ONE_BI);
   token1.totalTransactions = token1.totalTransactions.plus(ONE_BI);
 
-  // get new amounts of USD and BNB for tracking
+  // get new amounts of USD and ETH for tracking
   let bundle = Bundle.load("1");
-  let amountTotalUSD = token1.derivedBNB
+  let amountTotalUSD = token1.derivedETH
     .times(token1Amount)
-    .plus(token0.derivedBNB.times(token0Amount))
-    .times(bundle.bnbPrice);
+    .plus(token0.derivedETH.times(token0Amount))
+    .times(bundle.ethPrice);
 
   // update txn counts
-  pancake.totalTransactions = pancake.totalTransactions.plus(ONE_BI);
+  taal.totalTransactions = taal.totalTransactions.plus(ONE_BI);
   pair.totalTransactions = pair.totalTransactions.plus(ONE_BI);
 
   // update global counter and save
   token0.save();
   token1.save();
   pair.save();
-  pancake.save();
+  taal.save();
 
   // update burn
   // burn.sender = event.params.sender
@@ -332,7 +332,7 @@ export function handleBurn(event: Burn): void {
 
   updatePairDayData(event);
   updatePairHourData(event);
-  updatePancakeDayData(event);
+  updateTaalDayData(event);
   updateTokenDayData(token0 as Token, event);
   updateTokenDayData(token1 as Token, event);
 }
@@ -350,15 +350,15 @@ export function handleSwap(event: Swap): void {
   let amount0Total = amount0Out.plus(amount0In);
   let amount1Total = amount1Out.plus(amount1In);
 
-  // BNB/USD prices
+  // ETH/USD prices
   let bundle = Bundle.load("1");
 
-  // get total amounts of derived USD and BNB for tracking
-  let derivedAmountBNB = token1.derivedBNB
+  // get total amounts of derived USD and ETH for tracking
+  let derivedAmountETH = token1.derivedETH
     .times(amount1Total)
-    .plus(token0.derivedBNB.times(amount0Total))
+    .plus(token0.derivedETH.times(amount0Total))
     .div(BigDecimal.fromString("2"));
-  let derivedAmountUSD = derivedAmountBNB.times(bundle.bnbPrice);
+  let derivedAmountUSD = derivedAmountETH.times(bundle.ethPrice);
 
   // only accounts for volume through white listed tokens
   let trackedAmountUSD = getTrackedVolumeUSD(
@@ -369,11 +369,11 @@ export function handleSwap(event: Swap): void {
     token1 as Token
   );
 
-  let trackedAmountBNB: BigDecimal;
-  if (bundle.bnbPrice.equals(ZERO_BD)) {
-    trackedAmountBNB = ZERO_BD;
+  let trackedAmountETH: BigDecimal;
+  if (bundle.ethPrice.equals(ZERO_BD)) {
+    trackedAmountETH = ZERO_BD;
   } else {
-    trackedAmountBNB = trackedAmountUSD.div(bundle.bnbPrice);
+    trackedAmountETH = trackedAmountUSD.div(bundle.ethPrice);
   }
 
   // update token0 global volume and token liquidity stats
@@ -399,17 +399,17 @@ export function handleSwap(event: Swap): void {
   pair.save();
 
   // update global values, only used tracked amounts for volume
-  let pancake = PancakeFactory.load(FACTORY_ADDRESS);
-  pancake.totalVolumeUSD = pancake.totalVolumeUSD.plus(trackedAmountUSD);
-  pancake.totalVolumeBNB = pancake.totalVolumeBNB.plus(trackedAmountBNB);
-  pancake.untrackedVolumeUSD = pancake.untrackedVolumeUSD.plus(derivedAmountUSD);
-  pancake.totalTransactions = pancake.totalTransactions.plus(ONE_BI);
+  let taal = TaalFactory.load(FACTORY_ADDRESS);
+  taal.totalVolumeUSD = taal.totalVolumeUSD.plus(trackedAmountUSD);
+  taal.totalVolumeETH = taal.totalVolumeETH.plus(trackedAmountETH);
+  taal.untrackedVolumeUSD = taal.untrackedVolumeUSD.plus(derivedAmountUSD);
+  taal.totalTransactions = taal.totalTransactions.plus(ONE_BI);
 
   // save entities
   pair.save();
   token0.save();
   token1.save();
-  pancake.save();
+  taal.save();
 
   let transaction = Transaction.load(event.transaction.hash.toHex());
   if (transaction === null) {
@@ -451,15 +451,15 @@ export function handleSwap(event: Swap): void {
   // update day entities
   let pairDayData = updatePairDayData(event);
   let pairHourData = updatePairHourData(event);
-  let pancakeDayData = updatePancakeDayData(event);
+  let taalDayData = updateTaalDayData(event);
   let token0DayData = updateTokenDayData(token0 as Token, event);
   let token1DayData = updateTokenDayData(token1 as Token, event);
 
   // swap specific updating
-  pancakeDayData.dailyVolumeUSD = pancakeDayData.dailyVolumeUSD.plus(trackedAmountUSD);
-  pancakeDayData.dailyVolumeBNB = pancakeDayData.dailyVolumeBNB.plus(trackedAmountBNB);
-  pancakeDayData.dailyVolumeUntracked = pancakeDayData.dailyVolumeUntracked.plus(derivedAmountUSD);
-  pancakeDayData.save();
+  taalDayData.dailyVolumeUSD = taalDayData.dailyVolumeUSD.plus(trackedAmountUSD);
+  taalDayData.dailyVolumeETH = taalDayData.dailyVolumeETH.plus(trackedAmountETH);
+  taalDayData.dailyVolumeUntracked = taalDayData.dailyVolumeUntracked.plus(derivedAmountUSD);
+  taalDayData.save();
 
   // swap specific updating for pair
   pairDayData.dailyVolumeToken0 = pairDayData.dailyVolumeToken0.plus(amount0Total);
@@ -475,17 +475,17 @@ export function handleSwap(event: Swap): void {
 
   // swap specific updating for token0
   token0DayData.dailyVolumeToken = token0DayData.dailyVolumeToken.plus(amount0Total);
-  token0DayData.dailyVolumeBNB = token0DayData.dailyVolumeBNB.plus(amount0Total.times(token0.derivedBNB as BigDecimal));
+  token0DayData.dailyVolumeETH = token0DayData.dailyVolumeETH.plus(amount0Total.times(token0.derivedETH as BigDecimal));
   token0DayData.dailyVolumeUSD = token0DayData.dailyVolumeUSD.plus(
-    amount0Total.times(token0.derivedBNB as BigDecimal).times(bundle.bnbPrice)
+    amount0Total.times(token0.derivedETH as BigDecimal).times(bundle.ethPrice)
   );
   token0DayData.save();
 
   // swap specific updating
   token1DayData.dailyVolumeToken = token1DayData.dailyVolumeToken.plus(amount1Total);
-  token1DayData.dailyVolumeBNB = token1DayData.dailyVolumeBNB.plus(amount1Total.times(token1.derivedBNB as BigDecimal));
+  token1DayData.dailyVolumeETH = token1DayData.dailyVolumeETH.plus(amount1Total.times(token1.derivedETH as BigDecimal));
   token1DayData.dailyVolumeUSD = token1DayData.dailyVolumeUSD.plus(
-    amount1Total.times(token1.derivedBNB as BigDecimal).times(bundle.bnbPrice)
+    amount1Total.times(token1.derivedETH as BigDecimal).times(bundle.ethPrice)
   );
   token1DayData.save();
 }

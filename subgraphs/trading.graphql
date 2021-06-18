@@ -1,8 +1,8 @@
 type Bundle @entity {
     id: ID!
 
-    # Price in USD for BNB, derived from WBNB/BUSD pair
-    bnbPrice: BigDecimal!
+    # Price in USD for ETH, derived from WETH/BUSD pair
+    ethPrice: BigDecimal!
 
     # Block number
     block: BigInt!
@@ -20,7 +20,7 @@ type Competition @entity {
 
     # Volume
     volumeUSD: BigDecimal!
-    volumeBNB: BigDecimal!
+    volumeETH: BigDecimal!
 
     # Transactions count
     txCount: BigInt!
@@ -35,7 +35,7 @@ type Team @entity {
 
     # Volume
     volumeUSD: BigDecimal!
-    volumeBNB: BigDecimal!
+    volumeETH: BigDecimal!
 
     # Transactions count
     txCount: BigInt!
@@ -55,7 +55,7 @@ type User @entity {
 
     # Volume
     volumeUSD: BigDecimal!
-    volumeBNB: BigDecimal!
+    volumeETH: BigDecimal!
 
     # Transactions count
     txCount: BigInt!

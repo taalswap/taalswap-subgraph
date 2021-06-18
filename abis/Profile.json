@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "contract IBEP20",
-        "name": "_cakeToken",
+        "name": "_taalToken",
         "type": "address"
       },
       {
@@ -410,7 +410,7 @@
   },
   {
     "inputs": [],
-    "name": "cakeToken",
+    "name": "taalToken",
     "outputs": [
       {
         "internalType": "contract IBEP20",

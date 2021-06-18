@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_pancakeProfileAddress",
+        "name": "_taalProfileAddress",
         "type": "address"
       },
       {
@@ -13,7 +13,7 @@
       },
       {
         "internalType": "address",
-        "name": "_cakeTokenAddress",
+        "name": "_taalTokenAddress",
         "type": "address"
       }
     ],
@@ -144,7 +144,7 @@
   },
   {
     "inputs": [],
-    "name": "cakeToken",
+    "name": "taalToken",
     "outputs": [
       {
         "internalType": "contract IBEP20",
@@ -260,10 +260,10 @@
   },
   {
     "inputs": [],
-    "name": "pancakeProfile",
+    "name": "taalProfile",
     "outputs": [
       {
-        "internalType": "contract IPancakeProfile",
+        "internalType": "contract ITaalProfile",
         "name": "",
         "type": "address"
       }
@@ -338,7 +338,7 @@
       },
       {
         "internalType": "uint256[5]",
-        "name": "_cakeRewards",
+        "name": "_taalRewards",
         "type": "uint256[5]"
       },
       {
@@ -440,7 +440,7 @@
           },
           {
             "internalType": "uint256[5]",
-            "name": "cakeRewards",
+            "name": "taalRewards",
             "type": "uint256[5]"
           },
           {
