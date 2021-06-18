@@ -8,17 +8,17 @@
       },
       {
         "internalType": "uint256",
-        "name": "_numberCakeToReactivate",
+        "name": "_numberTalToReactivate",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_numberCakeToRegister",
+        "name": "_numberTalToRegister",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_numberCakeToUpdate",
+        "name": "_numberTalToUpdate",
         "type": "uint256"
       }
     ],
@@ -810,7 +810,7 @@
   },
   {
     "inputs": [],
-    "name": "numberCakeToReactivate",
+    "name": "numberTalToReactivate",
     "outputs": [
       {
         "internalType": "uint256",
@@ -823,7 +823,7 @@
   },
   {
     "inputs": [],
-    "name": "numberCakeToRegister",
+    "name": "numberTalToRegister",
     "outputs": [
       {
         "internalType": "uint256",
@@ -836,7 +836,7 @@
   },
   {
     "inputs": [],
-    "name": "numberCakeToUpdate",
+    "name": "numberTalToUpdate",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1036,21 +1036,21 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_newNumberCakeToReactivate",
+        "name": "_newNumberTalToReactivate",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_newNumberCakeToRegister",
+        "name": "_newNumberTalToRegister",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_newNumberCakeToUpdate",
+        "name": "_newNumberTalToUpdate",
         "type": "uint256"
       }
     ],
-    "name": "updateNumberCake",
+    "name": "updateNumberTal",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
