@@ -38,7 +38,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: Pair
-    network: bsc
+    network: rinkeby
     source:
       abi: Pair
     mapping:

@@ -3,20 +3,20 @@ import { BigDecimal, Address } from "@graphprotocol/graph-ts/index";
 import { Pair, Token, Bundle } from "../../generated/schema";
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from "./utils";
 
-let WBNB_ADDRESS = "0x92ecacfc94588aa99fba837be1a98738290e3252";
-let BUSD_WBNB_PAIR = "0xc21e58121ec8cb2782e622b877199d9e94ddd93e"; // created block 8639053
-let USDT_WBNB_PAIR = "0x3511803bd67f5149be3a64cdbce62576d0ec8b13"; // created block 8640192
+let WETH_ADDRESS = "0x92ecacfc94588aa99fba837be1a98738290e3252";
+let BUSD_WETH_PAIR = "0xc21e58121ec8cb2782e622b877199d9e94ddd93e"; // created block 8639053
+let USDT_WETH_PAIR = "0x3511803bd67f5149be3a64cdbce62576d0ec8b13"; // created block 8640192
 
-export function getBnbPriceInUSD(): BigDecimal {
+export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
-  let usdtPair = Pair.load(USDT_WBNB_PAIR); // usdt is token0
-  let busdPair = Pair.load(BUSD_WBNB_PAIR); // busd is token1
+  let usdtPair = Pair.load(USDT_WETH_PAIR); // usdt is token0
+  let busdPair = Pair.load(BUSD_WETH_PAIR); // busd is token1
 
   if (busdPair !== null && usdtPair !== null) {
-    let totalLiquidityBNB = busdPair.reserve0.plus(usdtPair.reserve0);    // TaalSwap의 경우 순서 바뀜
-    if (totalLiquidityBNB.notEqual(ZERO_BD)) {
-      let busdWeight = busdPair.reserve0.div(totalLiquidityBNB);
-      let usdtWeight = usdtPair.reserve0.div(totalLiquidityBNB);          // TaalSwap의 경우 순서 바뀜
+    let totalLiquidityETH = busdPair.reserve0.plus(usdtPair.reserve0);    // TaalSwap의 경우 순서 바뀜
+    if (totalLiquidityETH.notEqual(ZERO_BD)) {
+      let busdWeight = busdPair.reserve0.div(totalLiquidityETH);
+      let usdtWeight = usdtPair.reserve0.div(totalLiquidityETH);          // TaalSwap의 경우 순서 바뀜
       return busdPair.token1Price.times(busdWeight).plus(usdtPair.token1Price.times(usdtWeight));   // TaalSwap의 경우 순서 바뀜
     } else {
       return ZERO_BD;
@@ -32,7 +32,7 @@ export function getBnbPriceInUSD(): BigDecimal {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-  "0x92ecacfc94588aa99fba837be1a98738290e3252", // WBNB
+  "0x92ecacfc94588aa99fba837be1a98738290e3252", // WETH
   "0xd16431da4eafe953b4f34923cdb8d833fb1b2e7c", // BUSD
   "0xc958c2ace36870471238319bc29018cc549c126d", // USDT
   // "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // USDC
@@ -42,14 +42,14 @@ let WHITELIST: string[] = [
 ];
 
 // minimum liquidity for price to get tracked
-let MINIMUM_LIQUIDITY_THRESHOLD_BNB = BigDecimal.fromString("10");
+let MINIMUM_LIQUIDITY_THRESHOLD_ETH = BigDecimal.fromString("10");
 
 /**
- * Search through graph to find derived BNB per token.
- * @todo update to be derived BNB (add stablecoin estimates)
+ * Search through graph to find derived ETH per token.
+ * @todo update to be derived ETH (add stablecoin estimates)
  **/
-export function findBnbPerToken(token: Token): BigDecimal {
-  if (token.id == WBNB_ADDRESS) {
+export function findEthPerToken(token: Token): BigDecimal {
+  if (token.id == WETH_ADDRESS) {
     return ONE_BD;
   }
   // loop through whitelist and check if paired with any
@@ -57,13 +57,13 @@ export function findBnbPerToken(token: Token): BigDecimal {
     let pairAddress = factoryContract.getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]));
     if (pairAddress.toHex() != ADDRESS_ZERO) {
       let pair = Pair.load(pairAddress.toHex());
-      if (pair.token0 == token.id && pair.reserveBNB.gt(MINIMUM_LIQUIDITY_THRESHOLD_BNB)) {
+      if (pair.token0 == token.id && pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)) {
         let token1 = Token.load(pair.token1);
-        return pair.token1Price.times(token1.derivedBNB as BigDecimal); // return token1 per our token * BNB per token 1
+        return pair.token1Price.times(token1.derivedETH as BigDecimal); // return token1 per our token * ETH per token 1
       }
-      if (pair.token1 == token.id && pair.reserveBNB.gt(MINIMUM_LIQUIDITY_THRESHOLD_BNB)) {
+      if (pair.token1 == token.id && pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)) {
         let token0 = Token.load(pair.token0);
-        return pair.token0Price.times(token0.derivedBNB as BigDecimal); // return token0 per our token * BNB per token 0
+        return pair.token0Price.times(token0.derivedETH as BigDecimal); // return token0 per our token * ETH per token 0
       }
     }
   }
@@ -83,8 +83,8 @@ export function getTrackedVolumeUSD(
   tokenAmount1: BigDecimal,
   token1: Token
 ): BigDecimal {
-  let price0 = token0.derivedBNB.times(bundle.bnbPrice);
-  let price1 = token1.derivedBNB.times(bundle.bnbPrice);
+  let price0 = token0.derivedETH.times(bundle.ethPrice);
+  let price1 = token1.derivedETH.times(bundle.ethPrice);
 
   // both are whitelist tokens, take average of both amounts
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
@@ -118,8 +118,8 @@ export function getTrackedLiquidityUSD(
   tokenAmount1: BigDecimal,
   token1: Token
 ): BigDecimal {
-  let price0 = token0.derivedBNB.times(bundle.bnbPrice);
-  let price1 = token1.derivedBNB.times(bundle.bnbPrice);
+  let price0 = token0.derivedETH.times(bundle.ethPrice);
+  let price1 = token1.derivedETH.times(bundle.ethPrice);
 
   // both are whitelist tokens, take average of both amounts
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {

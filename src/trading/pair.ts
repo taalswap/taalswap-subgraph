@@ -27,40 +27,40 @@ export function handleSwap(event: Swap): void {
   let bundle = Bundle.load("1");
   let team = Team.load(user.team);
 
-  let bnbIN: BigDecimal;
-  let bnbOUT: BigDecimal;
+  let ethIN: BigDecimal;
+  let ethOUT: BigDecimal;
 
   if (event.address.equals(Address.fromString(TRACKED_PAIRS[0]))) {
-    bnbIN = event.params.amount0In.toBigDecimal().div(BD_1E18);
-    bnbOUT = event.params.amount0Out.toBigDecimal().div(BD_1E18);
+    ethIN = event.params.amount0In.toBigDecimal().div(BD_1E18);
+    ethOUT = event.params.amount0Out.toBigDecimal().div(BD_1E18);
   } else {
-    bnbIN = event.params.amount1In.toBigDecimal().div(BD_1E18);
-    bnbOUT = event.params.amount1Out.toBigDecimal().div(BD_1E18);
+    ethIN = event.params.amount1In.toBigDecimal().div(BD_1E18);
+    ethOUT = event.params.amount1Out.toBigDecimal().div(BD_1E18);
   }
 
-  let volumeBNB = bnbOUT.plus(bnbIN);
-  let volumeUSD = volumeBNB.times(bundle.bnbPrice);
+  let volumeETH = ethOUT.plus(ethIN);
+  let volumeUSD = volumeETH.times(bundle.ethPrice);
 
-  log.info("Volume: {} for {} BNB, or {} USD", [
+  log.info("Volume: {} for {} ETH, or {} USD", [
     event.transaction.from.toHex(),
-    volumeBNB.toString(),
+    volumeETH.toString(),
     volumeUSD.toString(),
   ]);
 
   user.volumeUSD = user.volumeUSD.plus(volumeUSD);
-  user.volumeBNB = user.volumeBNB.plus(volumeBNB);
+  user.volumeETH = user.volumeETH.plus(volumeETH);
   user.txCount = user.txCount.plus(BI_ONE);
   user.save();
 
   // Team statistics.
   team.volumeUSD = team.volumeUSD.plus(volumeUSD);
-  team.volumeBNB = team.volumeBNB.plus(volumeBNB);
+  team.volumeETH = team.volumeETH.plus(volumeETH);
   team.txCount = team.txCount.plus(BI_ONE);
   team.save();
 
   // Competition statistics.
   competition.volumeUSD = competition.volumeUSD.plus(volumeUSD);
-  competition.volumeBNB = competition.volumeBNB.plus(volumeBNB);
+  competition.volumeETH = competition.volumeETH.plus(volumeETH);
   competition.txCount = competition.txCount.plus(BI_ONE);
   competition.save();
 }

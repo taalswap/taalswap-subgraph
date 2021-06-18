@@ -1,31 +1,31 @@
 /* eslint-disable prefer-const */
 import { PairHourData } from "../../generated/schema";
 import { BigInt, BigDecimal, ethereum } from "@graphprotocol/graph-ts";
-import { Pair, Bundle, Token, PancakeFactory, PancakeDayData, PairDayData, TokenDayData } from "../../generated/schema";
+import { Pair, Bundle, Token, TaalFactory, TaalDayData, PairDayData, TokenDayData } from "../../generated/schema";
 import { ONE_BI, ZERO_BD, ZERO_BI, FACTORY_ADDRESS } from "./utils";
 
-export function updatePancakeDayData(event: ethereum.Event): PancakeDayData {
-  let pancake = PancakeFactory.load(FACTORY_ADDRESS);
+export function updateTaalDayData(event: ethereum.Event): TaalDayData {
+  let taal = TaalFactory.load(FACTORY_ADDRESS);
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
 
-  let pancakeDayData = PancakeDayData.load(dayID.toString());
-  if (pancakeDayData === null) {
-    pancakeDayData = new PancakeDayData(dayID.toString());
-    pancakeDayData.date = dayStartTimestamp;
-    pancakeDayData.dailyVolumeUSD = ZERO_BD;
-    pancakeDayData.dailyVolumeBNB = ZERO_BD;
-    pancakeDayData.totalVolumeUSD = ZERO_BD;
-    pancakeDayData.totalVolumeBNB = ZERO_BD;
-    pancakeDayData.dailyVolumeUntracked = ZERO_BD;
+  let taalDayData = TaalDayData.load(dayID.toString());
+  if (taalDayData === null) {
+    taalDayData = new TaalDayData(dayID.toString());
+    taalDayData.date = dayStartTimestamp;
+    taalDayData.dailyVolumeUSD = ZERO_BD;
+    taalDayData.dailyVolumeETH = ZERO_BD;
+    taalDayData.totalVolumeUSD = ZERO_BD;
+    taalDayData.totalVolumeETH = ZERO_BD;
+    taalDayData.dailyVolumeUntracked = ZERO_BD;
   }
-  pancakeDayData.totalLiquidityUSD = pancake.totalLiquidityUSD;
-  pancakeDayData.totalLiquidityBNB = pancake.totalLiquidityBNB;
-  pancakeDayData.totalTransactions = pancake.totalTransactions;
-  pancakeDayData.save();
+  taalDayData.totalLiquidityUSD = taal.totalLiquidityUSD;
+  taalDayData.totalLiquidityETH = taal.totalLiquidityETH;
+  taalDayData.totalTransactions = taal.totalTransactions;
+  taalDayData.save();
 
-  return pancakeDayData as PancakeDayData;
+  return taalDayData as TaalDayData;
 }
 
 export function updatePairDayData(event: ethereum.Event): PairDayData {
@@ -94,17 +94,17 @@ export function updateTokenDayData(token: Token, event: ethereum.Event): TokenDa
     tokenDayData = new TokenDayData(tokenDayID);
     tokenDayData.date = dayStartTimestamp;
     tokenDayData.token = token.id;
-    tokenDayData.priceUSD = token.derivedBNB.times(bundle.bnbPrice);
+    tokenDayData.priceUSD = token.derivedETH.times(bundle.ethPrice);
     tokenDayData.dailyVolumeToken = ZERO_BD;
-    tokenDayData.dailyVolumeBNB = ZERO_BD;
+    tokenDayData.dailyVolumeETH = ZERO_BD;
     tokenDayData.dailyVolumeUSD = ZERO_BD;
     tokenDayData.dailyTxns = ZERO_BI;
     tokenDayData.totalLiquidityUSD = ZERO_BD;
   }
-  tokenDayData.priceUSD = token.derivedBNB.times(bundle.bnbPrice);
+  tokenDayData.priceUSD = token.derivedETH.times(bundle.ethPrice);
   tokenDayData.totalLiquidityToken = token.totalLiquidity;
-  tokenDayData.totalLiquidityBNB = token.totalLiquidity.times(token.derivedBNB as BigDecimal);
-  tokenDayData.totalLiquidityUSD = tokenDayData.totalLiquidityBNB.times(bundle.bnbPrice);
+  tokenDayData.totalLiquidityETH = token.totalLiquidity.times(token.derivedETH as BigDecimal);
+  tokenDayData.totalLiquidityUSD = tokenDayData.totalLiquidityETH.times(bundle.ethPrice);
   tokenDayData.dailyTxns = tokenDayData.dailyTxns.plus(ONE_BI);
   tokenDayData.save();
 
