@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { TaalFactory, Pair, Token, Bundle } from "../../generated/schema";
+import { Factory, Pair, Token, Bundle } from "../../generated/schema";
 import { Pair as PairTemplate } from "../../generated/templates";
 import { PairCreated } from "../../generated/Factory/Factory";
 import {
@@ -13,9 +13,9 @@ import {
 } from "./utils";
 
 export function handlePairCreated(event: PairCreated): void {
-  let factory = TaalFactory.load(FACTORY_ADDRESS);
+  let factory = Factory.load(FACTORY_ADDRESS);
   if (factory === null) {
-    factory = new TaalFactory(FACTORY_ADDRESS);
+    factory = new Factory(FACTORY_ADDRESS);
     factory.totalPairs = ZERO_BI;
     factory.totalTransactions = ZERO_BI;
     factory.totalVolumeETH = ZERO_BD;
