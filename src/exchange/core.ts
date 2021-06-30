@@ -3,7 +3,7 @@ import { BigInt, BigDecimal, store } from "@graphprotocol/graph-ts";
 import {
   Pair,
   Token,
-  Factory,
+  TaalFactory,
   Transaction,
   Mint as MintEvent,
   Burn as BurnEvent,
@@ -165,7 +165,7 @@ export function handleSync(event: Sync): void {
   let pair = Pair.load(event.address.toHex());
   let token0 = Token.load(pair.token0);
   let token1 = Token.load(pair.token1);
-  let taal = Factory.load(FACTORY_ADDRESS);
+  let taal = TaalFactory.load(FACTORY_ADDRESS);
 
   // reset factory liquidity by subtracting only tracked liquidity
   taal.totalLiquidityETH = taal.totalLiquidityETH.minus(pair.trackedReserveETH as BigDecimal);
@@ -238,7 +238,7 @@ export function handleMint(event: Mint): void {
   let mint = MintEvent.load(mints[mints.length - 1]);
 
   let pair = Pair.load(event.address.toHex());
-  let taal = Factory.load(FACTORY_ADDRESS);
+  let taal = TaalFactory.load(FACTORY_ADDRESS);
 
   let token0 = Token.load(pair.token0);
   let token1 = Token.load(pair.token1);
@@ -292,7 +292,7 @@ export function handleBurn(event: Burn): void {
   let burn = BurnEvent.load(burns[burns.length - 1]);
 
   let pair = Pair.load(event.address.toHex());
-  let taal = Factory.load(FACTORY_ADDRESS);
+  let taal = TaalFactory.load(FACTORY_ADDRESS);
 
   //update token info
   let token0 = Token.load(pair.token0);
@@ -399,7 +399,7 @@ export function handleSwap(event: Swap): void {
   pair.save();
 
   // update global values, only used tracked amounts for volume
-  let taal = Factory.load(FACTORY_ADDRESS);
+  let taal = TaalFactory.load(FACTORY_ADDRESS);
   taal.totalVolumeUSD = taal.totalVolumeUSD.plus(trackedAmountUSD);
   taal.totalVolumeETH = taal.totalVolumeETH.plus(trackedAmountETH);
   taal.untrackedVolumeUSD = taal.untrackedVolumeUSD.plus(derivedAmountUSD);

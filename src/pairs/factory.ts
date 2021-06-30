@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { BigInt } from "@graphprotocol/graph-ts";
-import { Factory, Pair, Token } from "../../generated/schema";
+import { TaalFactory, Pair, Token } from "../../generated/schema";
 import { PairCreated } from "../../generated/Factory/Factory";
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from "./utils/bep20";
 
@@ -12,10 +12,10 @@ let ZERO_BI = BigInt.fromI32(0);
 let ONE_BI = BigInt.fromI32(1);
 
 export function handlePairCreated(event: PairCreated): void {
-  let factory = Factory.load(FACTORY_ADDRESS);
+  let factory = TaalFactory.load(FACTORY_ADDRESS);
   if (factory === null) {
     // Factory
-    factory = new Factory(FACTORY_ADDRESS);
+    factory = new TaalFactory(FACTORY_ADDRESS);
     factory.totalPairs = ZERO_BI;
     factory.totalTokens = ZERO_BI;
   }

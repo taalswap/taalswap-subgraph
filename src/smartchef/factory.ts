@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { BigInt } from "@graphprotocol/graph-ts";
-import { Factory, SmartChef, Token } from "../../generated/schema";
+import { TaalFactory, SmartChef, Token } from "../../generated/schema";
 import { NewSmartChefContract } from "../../generated/SmartChefFactory/SmartChefFactory";
 import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from "./utils/bep20";
 import {
@@ -23,7 +23,7 @@ export function handleNewSmartChefContract(event: NewSmartChefContract): void {
     return;
   }
 
-  let factory = Factory.load(FACTORY_ADDRESS);
+  let factory = TaalFactory.load(FACTORY_ADDRESS);
   if (factory === null) {
     factory = new Factory(FACTORY_ADDRESS);
     factory.totalSmartChef = ZERO_BI;
