@@ -3,28 +3,28 @@ import { BigDecimal, Address } from "@graphprotocol/graph-ts/index";
 import { Pair, Token, Bundle } from "../../generated/schema";
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from "./utils";
 
-let WETH_ADDRESS = "0x92ecacfc94588aa99fba837be1a98738290e3252";
-let BUSD_WETH_PAIR = "0xc21e58121ec8cb2782e622b877199d9e94ddd93e"; // created block 8639053
-let USDT_WETH_PAIR = "0x3511803bd67f5149be3a64cdbce62576d0ec8b13"; // created block 8640192
+let WETH_ADDRESS = "0x46884d7849223e057226a69e5f8215d6ff1b8bd6";
+let USDC_WETH_PAIR = "0x1e5aefcbf561cade978cf7c87762e97e772090c5"; // created block 10539128
+let USDT_WETH_PAIR = "0xd3ebd345775b0491e8842fdbad71256f5b15bf8a"; // created block 10539109
 
 export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
-  let usdtPair = Pair.load(USDT_WETH_PAIR); // usdt is token0
-  let busdPair = Pair.load(BUSD_WETH_PAIR); // busd is token1
+  let usdtPair = Pair.load(USDT_WETH_PAIR); // usdt is token1   // TaalSwap : token0 -> token1
+  let usdcPair = Pair.load(USDC_WETH_PAIR); // busd is token1
 
-  if (busdPair !== null && usdtPair !== null) {
-    let totalLiquidityETH = busdPair.reserve0.plus(usdtPair.reserve0);    // TaalSwap의 경우 순서 바뀜
+  if (usdcPair !== null && usdtPair !== null) {
+    let totalLiquidityETH = usdcPair.reserve0.plus(usdtPair.reserve0);    // TaalSwap의 경우 usdt 순서 바뀜
     if (totalLiquidityETH.notEqual(ZERO_BD)) {
-      let busdWeight = busdPair.reserve0.div(totalLiquidityETH);
-      let usdtWeight = usdtPair.reserve0.div(totalLiquidityETH);          // TaalSwap의 경우 순서 바뀜
-      return busdPair.token1Price.times(busdWeight).plus(usdtPair.token1Price.times(usdtWeight));   // TaalSwap의 경우 순서 바뀜
+      let busdWeight = usdcPair.reserve0.div(totalLiquidityETH);
+      let usdtWeight = usdtPair.reserve0.div(totalLiquidityETH);          // TaalSwap의 경우 usdt 순서 바뀜
+      return usdcPair.token1Price.times(busdWeight).plus(usdtPair.token1Price.times(usdtWeight));   // TaalSwap의 경우 usdt 순서 바뀜
     } else {
       return ZERO_BD;
     }
-  } else if (busdPair !== null) {
-    return busdPair.token1Price;
+  } else if (usdcPair !== null) {
+    return usdcPair.token1Price;
   } else if (usdtPair !== null) {
-    return usdtPair.token1Price;    // TaalSwap의 경우 순서 바뀜
+    return usdtPair.token1Price;    // TaalSwap의 경우 usdt 순서 바뀜
   } else {
     return ZERO_BD;
   }
@@ -32,9 +32,9 @@ export function getEthPriceInUSD(): BigDecimal {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-  "0x92ecacfc94588aa99fba837be1a98738290e3252", // WETH
-  "0xd16431da4eafe953b4f34923cdb8d833fb1b2e7c", // BUSD
-  "0xc958c2ace36870471238319bc29018cc549c126d", // USDT
+  "0x46884d7849223e057226a69e5f8215d6ff1b8bd6", // WETH
+  "0x9c8fa1ee532f8afe9f2e27f06fd836f3c9572f71", // USDC
+  "0x897ad6a487bd9b490d537b3860860863ae414f1e", // USDT
   // "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // USDC
   // "0x23396cf899ca06c4472205fc903bdb4de249d6fc", // UST
   // "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c", // BTCB

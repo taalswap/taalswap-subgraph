@@ -6,7 +6,7 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Profile
-    network: rinkeby
+    network: ropsten
     source:
       address: '0xDf4dBf6536201370F95e06A0F8a7a70fE40E388a'
       abi: Profile

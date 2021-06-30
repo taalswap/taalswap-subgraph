@@ -15,7 +15,7 @@ import { BLACKLISTED_ADDRESSES, convertTokenToDecimal } from "./utils";
 
 let ZERO_BI = BigInt.fromI32(0);
 let ONE_BI = BigInt.fromI32(1);
-let FACTORY_ADDRESS = "0xb737ff4cb36d55c412c303b7e85bcc8269772380";
+let FACTORY_ADDRESS = "0x90ed63c4768cd9e8202656ee3c1173e3a59abaec";
 
 export function handleNewSmartChefContract(event: NewSmartChefContract): void {
   // Do not process some SmartChef smart contract, hiccup.

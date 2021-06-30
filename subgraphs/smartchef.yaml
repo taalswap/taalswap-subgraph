@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: SmartChefFactory
-    network: rinkeby
+    network: ropsten
     source:
-      address: '0xb737ff4Cb36d55c412C303B7e85bcC8269772380'
+      address: '0x90Ed63C4768Cd9e8202656Ee3c1173e3A59aBAeC'
       abi: SmartChefFactory
-      startBlock: 8639075
+      startBlock: 10534251
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
