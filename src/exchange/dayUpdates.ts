@@ -1,11 +1,11 @@
 /* eslint-disable prefer-const */
 import { PairHourData } from "../../generated/schema";
 import { BigInt, BigDecimal, ethereum } from "@graphprotocol/graph-ts";
-import { Pair, Bundle, Token, TaalFactory, TaalDayData, PairDayData, TokenDayData } from "../../generated/schema";
+import { Pair, Bundle, Token, Factory, TaalDayData, PairDayData, TokenDayData } from "../../generated/schema";
 import { ONE_BI, ZERO_BD, ZERO_BI, FACTORY_ADDRESS } from "./utils";
 
 export function updateTaalDayData(event: ethereum.Event): TaalDayData {
-  let taal = TaalFactory.load(FACTORY_ADDRESS);
+  let taal = Factory.load(FACTORY_ADDRESS);
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;

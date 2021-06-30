@@ -1,4 +1,4 @@
-type TaalFactory @entity {
+type Factory @entity {
   id: ID!
 
   "Total of pairs"
