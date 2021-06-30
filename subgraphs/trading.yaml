@@ -6,7 +6,7 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: TradingCompetitionV1
-    network: rinkeby
+    network: ropsten
     source:
       address: '0xd718baa0B1F4f70dcC8458154042120FFE0DEFFA'
       abi: TradingCompetitionV1
@@ -38,7 +38,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: Pair
-    network: rinkeby
+    network: ropsten
     source:
       abi: Pair
     mapping:

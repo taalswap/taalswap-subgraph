@@ -6,7 +6,7 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Timelock
-    network: rinkeby
+    network: ropsten
     source:
       address: '0xA1f482Dc58145Ba2210bC21878Ca34000E2e8fE4'
       abi: Timelock
