@@ -10,14 +10,14 @@ let USDT_WETH_PAIR = "0xd3ebd345775b0491e8842fdbad71256f5b15bf8a"; // created bl
 export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
   let usdtPair = Pair.load(USDT_WETH_PAIR); // usdt is token1   // TaalSwap : token0 -> token1
-  let usdcPair = Pair.load(USDC_WETH_PAIR); // busd is token1
+  let usdcPair = Pair.load(USDC_WETH_PAIR); // usdc is token1
 
   if (usdcPair !== null && usdtPair !== null) {
     let totalLiquidityETH = usdcPair.reserve0.plus(usdtPair.reserve0);    // TaalSwap의 경우 usdt 순서 바뀜
     if (totalLiquidityETH.notEqual(ZERO_BD)) {
-      let busdWeight = usdcPair.reserve0.div(totalLiquidityETH);
+      let usdcWeight = usdcPair.reserve0.div(totalLiquidityETH);
       let usdtWeight = usdtPair.reserve0.div(totalLiquidityETH);          // TaalSwap의 경우 usdt 순서 바뀜
-      return usdcPair.token1Price.times(busdWeight).plus(usdtPair.token1Price.times(usdtWeight));   // TaalSwap의 경우 usdt 순서 바뀜
+      return usdcPair.token1Price.times(usdcWeight).plus(usdtPair.token1Price.times(usdtWeight));   // TaalSwap의 경우 usdt 순서 바뀜
     } else {
       return ZERO_BD;
     }
