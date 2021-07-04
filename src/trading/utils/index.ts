@@ -8,8 +8,8 @@ export let BD_ZERO = BigDecimal.fromString("0");
 export let BD_1E18 = BigDecimal.fromString("1e18");
 
 export let TRACKED_PAIRS: string[] = [
-  "0xd3ebd345775b0491e8842fdbad71256f5b15bf8a", // WETH/USDT
-  "0x0f8c6983fed6617dc72874b17c4849e765bafc23", // TAL/WETH
+  "0x61abc4ad785ee3952d220e2ba8a8fa26e83d4e05", // WETH/USDC
+  "0x8ecebf4b71f6143e57c2144a273b023e8b647882", // TAL/WETH
   // "0x70d8929d04b60af4fb9b58713ebcf18765ade422", // ETH/WETH
   // "0x7561eee90e24f3b348e1087a005f78b4c8453524", // BTCB/WETH
 ];

@@ -4,13 +4,13 @@ import { Pair, Token, Bundle } from "../../generated/schema";
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from "./utils";
 
 let WETH_ADDRESS = "0x46884d7849223e057226a69e5f8215d6ff1b8bd6";
-let USDC_WETH_PAIR = "0x1e5aefcbf561cade978cf7c87762e97e772090c5"; // created block 10539128
-let USDT_WETH_PAIR = "0xd3ebd345775b0491e8842fdbad71256f5b15bf8a"; // created block 10539109
+let USDC_WETH_PAIR = "0x61abc4ad785ee3952d220e2ba8a8fa26e83d4e05"; // created block 10566560
+let USDT_WETH_PAIR = "0x0ebd0874149762bc2f3f2d1113446ed93f47d40c"; // created block 10539109
 
 export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
-  let usdtPair = Pair.load(USDT_WETH_PAIR); // usdt is token1   // TaalSwap : token0 -> token1
   let usdcPair = Pair.load(USDC_WETH_PAIR); // usdc is token1
+  let usdtPair = Pair.load(USDT_WETH_PAIR); // usdt is token1   // TaalSwap : token0 -> token1
 
   if (usdcPair !== null && usdtPair !== null) {
     let totalLiquidityETH = usdcPair.reserve0.plus(usdtPair.reserve0);    // TaalSwap의 경우 usdt 순서 바뀜
@@ -42,7 +42,7 @@ let WHITELIST: string[] = [
 ];
 
 // minimum liquidity for price to get tracked
-let MINIMUM_LIQUIDITY_THRESHOLD_ETH = BigDecimal.fromString("10");
+let MINIMUM_LIQUIDITY_THRESHOLD_ETH = BigDecimal.fromString("1");
 
 /**
  * Search through graph to find derived ETH per token.
