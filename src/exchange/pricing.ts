@@ -4,8 +4,8 @@ import { Pair, Token, Bundle } from "../../generated/schema";
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from "./utils";
 
 let WETH_ADDRESS = "0x46884d7849223e057226a69e5f8215d6ff1b8bd6";
-let USDC_WETH_PAIR = "0x61abc4ad785ee3952d220e2ba8a8fa26e83d4e05"; // created block 10566560
-let USDT_WETH_PAIR = "0x0ebd0874149762bc2f3f2d1113446ed93f47d40c"; // created block 10539109
+let USDC_WETH_PAIR = "0x65f1eb2bcb4b1d9a043366de732f0f7e055d2fab"; // created block 10566560
+let USDT_WETH_PAIR = "0xaddb08d7f1c5c29243f85e7b400be6aacd3298f2"; // created block 10539109
 
 export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
