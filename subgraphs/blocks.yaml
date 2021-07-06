@@ -6,10 +6,10 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: BSCValidatorSet
-    network: ropsten
+    network: mainnet
     source:
-      address: '0xA479E4C36FD8D3d7135F29001912fD5B0857f2e3'
-      startBlock: 10572582
+      address: '0xded8b52643c126e996fc1fea9f0c053338bc7e72'
+      startBlock: 12773911
       abi: BSCValidatorSet
     mapping:
       kind: ethereum/events
