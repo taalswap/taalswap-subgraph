@@ -24,6 +24,9 @@ type Bundle @entity {
 
   "ETH price, in USD"
   ethPrice: BigDecimal!
+
+  "Block number"
+  block:  BigInt
 }
 
 type Token @entity {

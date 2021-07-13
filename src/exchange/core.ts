@@ -184,6 +184,7 @@ export function handleSync(event: Sync): void {
 
   let bundle = Bundle.load("1");
   bundle.ethPrice = getEthPriceInUSD();
+  bundle.block = event.block.number;
   bundle.save();
 
   let t0DerivedETH = findEthPerToken(token0 as Token);
