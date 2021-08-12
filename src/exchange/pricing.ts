@@ -11,6 +11,7 @@ let USDT_WETH_PAIR = "";
 
 export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
+  // 주의 : token0 및 token1의 순서 중요
   let usdcPair = Pair.load(USDC_WETH_PAIR); // usdc is token0
   let usdtPair = Pair.load(USDT_WETH_PAIR); // usdt is token1
 
